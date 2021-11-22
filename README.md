@@ -1,1 +1,2 @@
-# BastilleBSD-Templates_mdd-mosquittomqtt
+# MosquittoMqtt
+Bastille jail template for Mosquitto Mqtt

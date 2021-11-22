@@ -1,0 +1,22 @@
+ARG APP_NAME=mosquitto
+ARG PKG_INSTALL="mosquitto"
+
+ARG DATA_DIR=/usr/local/etc/${APP_NAME}
+
+# Path on Jail Host to mount as $DATA_DIR. Used when uncommenting MOUNT directive below.
+ARG DATA_DIR_HOST=/data/${APP_NAME}
+
+ARG APP_PORT=1883
+ARG APP_USER=roger
+ARG APP_PASS=password
+
+PKG "${PKG_INSTALL}"
+SYSRC ${APP_NAME}_config="${DATA_DIR}/${APP_NAME}.conf"
+SYSRC ${APP_NAME}_enable=YES
+# Uncomment to store persistent data outside of the jail in ${DATA_DIR_HOST}.
+#CMD mkdir -p ${DATA_DIR}
+#MOUNT ${DATA_DIR_HOST} ${DATA_DIR} nullfs rw 0 0
+CP usr /
+CMD test -f "${DATA_DIR}/pwfile" || mosquitto_passwd -c -b "${DATA_DIR}/pwfile" "${APP_USER}" "${APP_PASS}"
+RENDER ${DATA_DIR}/${APP_NAME}.conf
+SERVICE ${APP_NAME} start
